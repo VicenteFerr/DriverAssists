@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		.modal {
+		  display: none;
+		  position: fixed;
+		  z-index: 1;
+		  padding-top: 100px;
+		  left: 0;
+		  top: 0;
+		  width: 100%;
+		  height: 100%;
+		  overflow: auto; 
+		  background-color: rgb(0,0,0); 
+		  background-color: rgba(0,0,0,0.4); 
+		}
+		.modal-content {
+		  background-color: #fefefe;
+		  margin: auto;
+		  padding: 20px;
+		  border: 1px solid #888;
+		  width: 80%;
+		}
+		.close {
+		  color: #aaaaaa;
+		  float: right;
+		  font-size: 28px;
+		  font-weight: bold;
+		}
+		.close:hover,
+		.close:focus {
+		  color: #000;
+		  text-decoration: none;
+		  cursor: pointer;
+		}
+	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+	<script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+	<link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	
+
+
+	<title>Driver Assists #Alpha</title>
+</head>
+<body style="background-color: #839abd">
+	<div class="container-fluid" style="padding-top: 15px;">
+	  <div class="row">
+	    <div class="col-4" style="text-align: left;">
+	    	<div style="border: 4px solid #303d57;width: 280px;border-radius: 25px; text-align: center;background-color: #e2dfdb"><b>Bem vindo #UtilizadorAlpha# !</b></div>
+	    </div>
+	    <div class="col-4" style="text-align: center;">
+	    	<div style="border: 4px solid #303d57;width: 280px;border-radius: 25px; text-align: center;background-color: #e2dfdb">
+	      		<b id="PosUtil"></b>
+	      	</div>
+	    </div>
+	    <div class="col-4" style="text-align: right;">
+	      <button style="border: 4px solid #303d57; border-radius: 25px">Sair</button>
+	    </div>
+	  </div>
+	</div>
+	<div class="container-fluid" style="padding-top: 15px">
+	  <div class="row">
+	    <div class="col-9" style="text-align: right;">
+	      <div class="container-fluid" style="display: flex;text-align: center; padding-left: 80px">
+        	<div id="Mapa" style="width: 1350px; height: 700px; border: 6px solid #303d57"></div>
+ 		  </div>
+	    </div>
+	    <div class="col-3" style="text-align:center;">
+	    	<button onclick="disMarkers()" style="border: 4px solid #303d57;width: 230px; border-radius: 25px">Mostrar Pontos Guardados</button>
+	        <button id="pontoBTN"style="border: 4px solid #303d57;width: 230px; border-radius: 25px;">Guardar Ponto</button>
+	        <button id="rotaBTN"style="border: 4px solid #303d57;width: 230px; border-radius: 25px;" onclick="gerarRotas()">Gerar Rota</button>
+
+	      	
+	    </div>
+	  </div>
+	</div>
+	<div class="container-fluid" style="padding-top: 15px">
+	  <div class="row">
+	    <div class="col-sm" style="text-align:center">
+	      <button style="border: 4px solid #303d57;width: 230px; border-radius: 25px">Rotas Guardadas</button>
+	    </div>
+	    <div class="col-sm" style="text-align:center">
+	    	<p>Pesquisar</p>
+	    </div>
+	    <div class="col-sm" style="text-align:center">
+	      <button id="carroBTN" style="border: 4px solid #303d57;width: 230px; border-radius: 25px">Configurar Automóvel</button>
+	    </div>
+	  </div>
+	</div>
+	<div class="container-fluid" style="padding-top: 15px">
+	  <div class="row">
+	    <div class="col-sm" style="text-align:center">
+	      <button style="border: 4px solid #303d57;width: 230px; border-radius: 25px">Guardar Rota</button>
+	    </div>
+	    <div class="col-sm" style="text-align:center">
+
+	    </div>
+	    <div class="col-sm" style="text-align:center">
+	      <p id="carroN"></p>
+	      <progress id="pBar" value="12" max="20">
+		  </progress>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Modal Registar Marker -->
+			<div id="modalPonto" class="modal">
+
+			  <div class="modal-content" style="width: 40%;border: 6px solid #303d57; background-color: #e2dfdb; height: 60% " >
+			    <span class="close" style="text-align: right;">&times;</span>
+			    <p>Guardar Novo Ponto:</p>
+			    <form action="/action_page.php">
+				  Nome: <input type="text" id="nomeMarker"><br>
+					<fieldset>
+							<label for="Resposta">Restaurante</label>
+							<input type="checkbox" id="RespostaRes" />
+
+							<label for="Resposta">Hotel</label>
+							<input type="checkbox" id="RespostaHtl" />
+
+							<label for="Resposta">Marco</label>
+							<input type="checkbox" id="RespostaMrc" />
+
+							<label for="Resposta">Outro</label>
+							<input type="checkbox" id="RespostaOtr" />
+					</fieldset>
+				</form>
+				<button onclick="gerarMarker(document.getElementById('nomeMarker').value); modal.style.display = 'none';">Confirmar</button>
+			  </div>
+
+			</div>
+
+	<!-- Modal Registar Carro -->
+			<div id="modalCarro" class="modal">
+
+			  <div class="modal-content" style="width: 40%;border: 6px solid #303d57; background-color: #e2dfdb; height: 60% " >
+			    <span class="close" style="text-align: right;">&times;</span>
+			    <p>Configurar Automóvel:</p>
+			    <form action="/action_page.php">
+				  Marca/Modelo: <input type="text" id="marcaCarro"><br>
+				  Consumo(l/100km): <input type="text" id="consumoCarro"><br>
+				</form>
+				<button onclick="modal.style.display = 'none';carro(document.getElementById('marcaCarro').value,document.getElementById('consumoCarro').value)">Registar</button>
+			  </div>
+
+			</div>		
+
+
+
+	<script src="Mapa.js"></script>
+	<script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=tcTFFbkihkDTEXvDXEdDdWtmm4KuPaMj"></script>
+	<script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=tcTFFbkihkDTEXvDXEdDdWtmm4KuPaMj"></script>
+
+
+
+	<script type="text/javascript">
+		function clickRes() {
+				if (document.getElementById("RespostaHtl").checked) {
+						document.getElementById("RespostaHtl").checked = false;
+				}
+				if (document.getElementById("RespostaMrc").checked) {
+						document.getElementById("RespostaMrc").checked = false;
+				}
+				if (document.getElementById("RespostaOtr").checked) {
+						document.getElementById("RespostaOtr").checked = false;
+				}
+		}
+
+		function clickHtl() {
+				if (document.getElementById("RespostaRes").checked) {
+						document.getElementById("RespostaRes").checked = false;
+				}
+				if (document.getElementById("RespostaMrc").checked) {
+						document.getElementById("RespostaMrc").checked = false;
+				}
+				if (document.getElementById("RespostaOtr").checked) {
+						document.getElementById("RespostaOtr").checked = false;
+				}
+		}
+
+		function clickMrc() {
+				if (document.getElementById("RespostaRes").checked) {
+						document.getElementById("RespostaRes").checked = false;
+				}
+				if (document.getElementById("RespostaHtl").checked) {
+						document.getElementById("RespostaHtl").checked = false;
+				}
+				if (document.getElementById("RespostaOtr").checked) {
+						document.getElementById("RespostaOtr").checked = false;
+				}
+		}
+
+		function clickOtr() {
+				if (document.getElementById("RespostaRes").checked) {
+						document.getElementById("RespostaRes").checked = false;
+				}
+				if (document.getElementById("RespostaHtl").checked) {
+						document.getElementById("RespostaHtl").checked = false;
+				}
+				if (document.getElementById("RespostaMrc").checked) {
+						document.getElementById("RespostaMrc").checked = false;
+				}
+		}
+
+		document.getElementById("RespostaRes").onchange = clickRes;
+		document.getElementById("RespostaHtl").onchange = clickHtl;
+		document.getElementById("RespostaMrc").onchange = clickMrc;
+		document.getElementById("RespostaOtr").onchange = clickOtr;
+	</script>
+
+	<script type="text/javascript">
+		var carroNome = "";
+		var carroConsumo = 0;
+		function carro(nome,consumo){
+			carroNome = nome;
+			carroConsumo = consumo;
+			document.getElementById('carroN').innerHTML = carroNome+' / Consumo Esperado:';
+			document.getElementById("pBar").value = Number(consumo);
+		}
+	</script>
+
+	<script>
+	//Modal para adicionar Marker
+	var modal = document.getElementById("modalPonto");
+
+	var btn = document.getElementById("pontoBTN");
+
+	var span = document.getElementsByClassName("close")[0];
+
+	btn.onclick = function() {
+	  modal.style.display = "block";
+	}
+
+	span.onclick = function() {
+	  modal.style.display = "none";
+	}
+
+	window.onclick = function(event) {
+	  if (event.target == modal) {
+	    modal.style.display = "none";
+	  }
+	}
+	</script>
+
+	<script>
+	//Modal para adicionar Carro
+	var modal2 = document.getElementById("modalCarro");
+
+	var btn2 = document.getElementById("carroBTN");
+
+	var span = document.getElementsByClassName("close")[1];
+
+	btn2.onclick = function() {
+	  modal2.style.display = "block";
+	}
+
+	span.onclick = function() {
+	  modal2.style.display = "none";
+	}
+
+	window.onclick = function(event) {
+	  if (event.target == modal2) {
+	    modal2.style.display = "none";
+	  }
+	}
+	</script>
+
+
+</body>
+</html>
